@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FrequencyBenders Giveaway</title>
+    <link rel="stylesheet" href="giveaway.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@200&family=Oswald:wght@600&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+<div class="menu-container">
+    <ul class="menu-list">
+        <li><a href="index.html">Sub Case</a></li>
+        <li><a href="giveaway.html" class="active">Giveaway</a></li>
+    </ul>
+</div>
+<div class="logo-container">
+    <img src="logo.png" alt="FrequencyBenders Logo" class="logo-image">
+    <span class="logo-text">FrequencyBenders</span>
+</div>
+<div class="spacer"></div>
+
+<div class="case-container">
+    <div class="spin-container">
+        <!-- Initially empty; participants will be added dynamically -->
+    </div>
+</div>
+
+<div class="case-details">
+    <img src="case-image.png" alt="Case Image" class="case-image">
+    <div class="case-info">
+        <div class="header-row">
+            <h2 class="case-name">Giveaway Case</h2>
+        </div>
+        <div class="content-row">
+            <div class="left-column">
+                <p class="case-description">Join the giveaway by typing the keyword in chat</p>
+                <div class="keyword-input-container">
+                    <input type="text" id="keyword-input" placeholder="Set active keyword" class="keyword-input">
+                </div>
+                <div class="button-container">
+                    <button class="open-case-btn" id="spin-wheel">Spin</button>
+                    <button class="clear-btn" id="clear-giveaway">Clear</button>
+                </div>
+            </div>
+            <div class="middle-column">
+                <div class="winner-section">
+                    <div class="winner-display">
+                        <span class="winner-label">Winner Chat: </span><span id="winner-name">None</span>
+                    </div>
+                    <div class="winner-messages" id="winner-messages">
+                        <!-- Winner chat messages will appear here -->
+                    </div>
+                </div>
+            </div>
+            <div class="right-column">
+                <div class="last-drop">
+                    <h3>Participants:</h3>
+                    <div class="last-drop-item">
+                        <span class="participant-count" id="participant-count">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="last-winners">
+    <h3>Last Winners:</h3>
+    <ul id="winners-list"></ul>
+</div>
+
+<div class="potential-drops">
+    <h3>Case Contents</h3>
+    <div class="item-list-items">
+        <div class="item-list-item">
+            <div class="list-item-image">
+                <img src="item8.png" alt="100 Tip on Rustmagic / Rustclash">
+            </div>
+            <div class="item-text">
+                <span class="item-category">RustMagic / RustClash</span>
+                <span class="item-name">100 Tip</span>
+                <span class="percentage">0.2%</span>
+            </div>
+        </div>
+        <div class="item-list-item">
+            <div class="list-item-image">
+                <img src="item7.png" alt="50 Tip on Rustmagic / Rustclash">
+            </div>
+            <div class="item-text">
+                <span class="item-category">RustMagic / RustClash</span>
+                <span class="item-name">50 Tip</span>
+                <span class="percentage">5%</span>
+            </div>
+        </div>
+        <div class="item-list-item">
+            <div class="list-item-image">
+                <img src="item2.png" alt="25 Tip on Rustmagic / Rustclash">
+            </div>
+            <div class="item-text">
+                <span class="item-category">RustMagic / RustClash</span>
+                <span class="item-name">25 Tip</span>
+                <span class="percentage">10%</span>
+            </div>
+        </div>
+        <div class="item-list-item">
+            <div class="list-item-image">
+                <img src="item3.png" alt="15 Tip on Rustmagic / Rustclash">
+            </div>
+            <div class="item-text">
+                <span class="item-category">RustMagic / RustClash</span>
+                <span class="item-name">15 Tip</span>
+                <span class="percentage">30%</span>
+            </div>
+        </div>
+        <div class="item-list-item">
+            <div class="list-item-image">
+                <img src="item4.png" alt="10 Tip on Rustmagic / Rustclash">
+            </div>
+            <div class="item-text">
+                <span class="item-category">RustMagic / RustClash</span>
+                <span class="item-name">10 Tip</span>
+                <span class="percentage">54.8%</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<audio id="tickSound" src="tick.mp3" preload="auto"></audio>
+<div class="page-watermark">Made by Amyntus. Good luck!</div>
+<div class="leaderboard-container">
+    <h3>Total Given Away (since April)</h3>
+    <div class="total-given-away" id="total-given-away">0</div>
+    <h3>Top 10 Winners</h3>
+    <ul class="leaderboard-list" id="leaderboard-list"></ul>
+</div>
+<script src="giveaway.js"></script>
+</body>
+</html>

@@ -1,0 +1,595 @@
+body {
+    background-color: #040404;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+    font-family: 'Bai Jamjuree', sans-serif;
+}
+.menu-container {
+    position: absolute;
+    top: 110px;
+    z-index: 10;
+}
+.menu-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+}
+.menu-list li {
+    margin: 0;
+}
+.menu-list a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.2em;
+    font-family: 'Bai Jamjuree', sans-serif;
+    text-shadow: 0 0 7px rgba(147, 51, 234, 0.53), 0 0 13px rgba(192, 132, 252, 0.33);
+    transition: all 0.3s ease;
+    padding: 5px 10px;
+    display: block;
+    background: linear-gradient(
+        to right,
+        rgba(255, 18, 165, 0.1),
+        rgba(192, 132, 252, 0.05),
+        rgba(255, 18, 165, 0.1)
+    );
+    border-radius: 5px;
+}
+.menu-list a:hover {
+    color: #ff12a5;
+    background: linear-gradient(
+        to right,
+        rgba(255, 18, 165, 0.3),
+        rgba(192, 132, 252, 0.15),
+        rgba(255, 18, 165, 0.3)
+    );
+    transform: translateY(-2px);
+}
+.menu-list a.active {
+    color: #fff;
+    font-weight: bold;
+    background: linear-gradient(
+        to right,
+        rgba(255, 18, 165, 0.4),
+        rgba(192, 132, 252, 0.2),
+        rgba(255, 18, 165, 0.4)
+    );
+    text-shadow: 0 0 10px rgba(255, 18, 165, 0.8), 0 0 15px rgba(192, 132, 252, 0.6);
+}
+.logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: -100px;
+    margin-top: -20px;
+}
+.logo-image {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 13px rgba(255, 18, 165, 0.53));
+    margin-top: 50px;
+}
+.logo-text {
+    color: #fff;
+    font-size: 2em;
+    font-family: 'Bai Jamjuree', sans-serif;
+    margin-left: 20px;
+    text-shadow: 0 0 7px rgba(147, 51, 234, 0.53), 0 0 13px rgba(192, 132, 252, 0.33);
+    margin-top: 50px;
+}
+.spacer {
+    height: 100px;
+}
+.case-container {
+    width: 80%;
+    max-width: 1200px;
+    height: 200px;
+    margin: 20px 0;
+    overflow: hidden;
+    position: relative;
+    border-radius: 10px;
+    background: linear-gradient(
+        to bottom,
+        rgba(255, 18, 165, 0.1),
+        rgba(192, 132, 252, 0.05) 50%,
+        rgba(255, 18, 165, 0.1)
+    ), #0b0c0c;
+    box-shadow: 0 0 67px 33px rgba(255, 18, 165, 0.15);
+}
+.case-container::before {
+    content: '';
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 80%;
+    background: #ffffff;
+    z-index: 2;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, white 10%, white 90%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, white 10%, white 90%, transparent 100%);
+    transition: opacity 0.3s ease;
+}
+.case-container.hide-separator::before {
+    opacity: 0;
+}
+.spin-container {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    will-change: transform;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+.item {
+    margin: 0 10px;
+    opacity: 0.5; /* Keep this for non-winning items during spin */
+    display: inline-block;
+    color: #ffffff; /* White text */
+    font-size: 1.2em; /* Slightly larger for readability */
+    font-weight: bold; /* Bold text */
+    text-shadow: 0 0 7px rgba(147, 51, 234, 0.53), 0 0 13px rgba(192, 132, 252, 0.33); /* Shadow for contrast */
+    min-width: 80px; /* Ensure consistent spacing */
+    text-align: center; /* Center text within each item */
+}
+.item-wrapper {
+    position: relative;
+    width: 92px;
+    height: 80px;
+    overflow: visible;
+}
+.watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 92px;
+    height: 80px;
+    opacity: 0.3;
+    z-index: 0;
+}
+.item-image {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    z-index: 1;
+    filter: drop-shadow(0 0 13px rgba(255, 18, 165, 0.67)) drop-shadow(0 0 27px rgba(192, 132, 252, 0.33));
+}
+.winning-item-text {
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #ffffff;
+    font-size: 1em;
+    font-family: 'Bai Jamjuree', sans-serif;
+    text-shadow: 0 0 7px rgba(147, 51, 234, 0.53), 0 0 13px rgba(192, 132, 252, 0.33);
+    white-space: nowrap;
+    z-index: 2;
+    font-weight: bold;
+}
+.case-details {
+    display: flex;
+    align-items: flex-start;
+    width: 80%;
+    max-width: 1200px;
+    margin: 20px 0;
+    padding: 20px;
+    background: linear-gradient(
+        to right,
+        rgba(255, 18, 165, 0.2),
+        rgba(192, 132, 252, 0.05),
+        rgba(255, 18, 165, 0.2)
+    ), #0b0c0c;
+    border-radius: 5px;
+    min-height: 190px;
+    box-shadow: 0px 0px 53px 27px rgba(255, 18, 165, 0.1);
+}
+.case-image {
+    width: 150px;
+    height: 150px;
+    margin-right: 40px;
+	margin-top: 15px;
+}
+.case-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+.header-row {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.content-row {
+    display: flex;
+    justify-content: space-between;
+    flex: 1;
+}
+.left-column {
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+}
+.middle-column {
+    width: 40%;
+    display: flex;
+    justify-content: center; /* Center the winner section */
+	margin-top: -40px;
+}
+.right-column {
+    width: 30%;
+    display: flex;
+    justify-content: flex-end;
+}
+.winner-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 250px; /* Fixed width to match winner-messages */
+}
+.last-drop {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 150px;
+}
+.last-drop h3 {
+    color: #fff;
+    font-size: 1.2em;
+    margin: 0 0 10px 0;
+}
+.last-drop-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 130px;
+    width: 100%;
+	margin-top: -30px;
+}
+.participant-count {
+    color: #fff;
+    font-size: 2em;
+    font-weight: bold;
+    text-shadow: 0 0 7px rgba(255, 18, 165, 0.53);
+}
+.keyword-input-container {
+    margin: 10px 0;
+}
+.keyword-input {
+    padding: 8px;
+    width: 200px;
+    border: none;
+    border-radius: 5px;
+    background: linear-gradient(
+        to right,
+        rgba(255, 18, 165, 0.2),
+        rgba(192, 132, 252, 0.1)
+    );
+    color: #fff;
+    font-family: 'Bai Jamjuree', sans-serif;
+    font-size: 1em;
+    box-shadow: 0 0 10px rgba(255, 18, 165, 0.3);
+	margin-top: -50px;
+	margin-bottom: 10px;
+}
+.keyword-input::placeholder {
+    color: #ccc;
+}
+.winner-display {
+    color: #fff;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    text-align: center;
+}
+.winner-label {
+    font-weight: bold;
+    text-shadow: 0 0 7px rgba(147, 51, 234, 0.53);
+}
+#winner-name {
+    font-weight: bold;
+    color: #ff12a5;
+    text-shadow: 0 0 7px rgba(255, 18, 165, 0.53);
+}
+.winner-messages {
+    background: linear-gradient(
+        to right,
+        rgba(255, 18, 165, 0.2),
+        rgba(192, 132, 252, 0.05),
+        rgba(255, 18, 165, 0.2)
+    ), #0b0c0c;
+    border-radius: 5px;
+    padding: 10px;
+    height: 130px;
+    width: 250px;
+    overflow-y: auto;
+    color: #fff;
+    font-size: 0.9em;
+    text-shadow: 0 0 5px rgba(255, 18, 165, 0.3);
+    text-align: left;
+}
+.winner-messages p {
+    margin: 5px 0;
+}
+.button-container {
+    display: flex;
+    gap: 10px;
+}
+.open-case-btn {
+    padding: 8px 10px;
+    background-color: #a12071;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 120px;
+    font-family: 'Bai Jamjuree', sans-serif;
+}
+.open-case-btn:hover {
+    background-color: #7b0f52;
+}
+.clear-btn {
+    padding: 8px 10px;
+    background-color: #ff0000;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 120px;
+    font-family: 'Bai Jamjuree', sans-serif;
+}
+.clear-btn:hover {
+    background-color: #cc0000;
+}
+.potential-drops {
+    width: 80%;
+    max-width: 1200px;
+}
+.potential-drops h3 {
+    color: #fff;
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+.item-list-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 15px;
+}
+.item-list-item {
+    background: linear-gradient(
+        to right,
+        rgba(255, 18, 165, 0.2),
+        rgba(192, 132, 252, 0.05),
+        rgba(255, 18, 165, 0.2)
+    ), #0b0c0c;
+    border-radius: 5px;
+    padding: 10px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    box-shadow: 0px 0px 53px 27px rgba(255, 18, 165, 0.13);
+}
+.list-item-image {
+    flex: 0 0 auto;
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    height: 100%;
+}
+.list-item-image img {
+    width: 70px;
+    height: auto;
+}
+.item-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+.item-category {
+    font-size: 0.8em;
+    color: #888;
+    margin-bottom: 2.5px;
+}
+.item-name {
+    font-size: 1em;
+    font-weight: bold;
+    color: #fff;
+}
+.percentage {
+    position: absolute;
+    top: -25px;
+    right: 0px;
+    background: #151719;
+    color: #fff;
+    padding: 2px 5px;
+    border-radius: 5px;
+    font-size: 0.9em;
+    min-width: 40px;
+    text-align: center;
+    font-weight: bold;
+}
+.case-container, .case-details {
+    box-sizing: border-box;
+}
+.case-description {
+    color: #fff;
+    font-size: 1em;
+    margin-top: 0;
+}
+.case-name {
+    color: #fff;
+    font-size: 1.5em;
+    margin: 0;
+}
+.page-watermark {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    color: #999;
+    font-size: 0.9em;
+    font-family: 'Bai Jamjuree', sans-serif;
+    z-index: 10;
+}
+
+/* New .participant-name for participant spins */
+.participant-name {
+    color: #ffffff;
+    font-size: 1.2em;
+    font-weight: bold;
+    text-shadow: 0 0 7px rgba(147, 51, 234, 0.53), 0 0 13px rgba(192, 132, 252, 0.33);
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 92px; /* Match item-wrapper width */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+}
+
+/* Add float-image class */
+.float-image {
+    animation: float-image 2s ease-in-out infinite;
+}
+
+/* Add keyframes */
+@keyframes float-image {
+    0% { transform: translate(-50%, -50%) translateY(0px); }
+    50% { transform: translate(-50%, -50%) translateY(-5px); }
+    100% { transform: translate(-50%, -50%) translateY(0px); }
+}
+
+/* Scrollbar styling for WebKit browsers */
+#winner-messages::-webkit-scrollbar {
+    width: 8px; /* Slim scrollbar */
+}
+
+#winner-messages::-webkit-scrollbar-track {
+    background: rgba(20, 20, 20, 0.8); /* Dark track */
+    border-radius: 4px;
+}
+
+#winner-messages::-webkit-scrollbar-thumb {
+    background: #a12071; /* Purple-pinkish thumb, matching lighter accent */
+    border-radius: 4px;
+}
+
+#winner-messages::-webkit-scrollbar-thumb:hover {
+    background: #B54285; /* Even lighter pinkish-purple on hover */
+}
+
+#winner-messages::-webkit-scrollbar-corner {
+    background: rgba(20, 20, 20, 0.8); /* Match track */
+}
+
+/* Style for Last Winners section */
+#last-winners {
+    margin-top: -25px; /* Space above the section */
+    color: white; /* White text for the entire section */
+    text-align: center; /* Center-align the heading */
+}
+
+#last-winners h3 {
+    font-size: 1.2em; /* Slightly larger heading */
+    margin-bottom: -10px; /* Space below "Last Winners:" */
+    color: white; /* Explicitly white, though inherited from parent */
+}
+
+#winners-list {
+    list-style: none; /* Remove default bullets */
+    padding: 0; /* Remove default padding */
+    display: flex; /* Use Flexbox for horizontal alignment */
+    gap: 15px; /* Space between items */
+    flex-wrap: wrap; /* Allow wrapping if too many items */
+    justify-content: center; /* Center the horizontal list */
+	margin-bottom: -50px;
+}
+
+#winners-list li {
+    padding: 5px; /* Padding around each item */
+    color: white; /* White text for each winner */
+}
+
+.leaderboard-container {
+    position: fixed;
+    top: 80px;
+    right: 25px;
+    width: 300px; /* Fixed width */
+    height: 400px; /* Increased height to fit all 10 players without scroll */
+    background: linear-gradient(
+        to bottom,
+        rgba(255, 18, 165, 0.2),
+        rgba(192, 132, 252, 0.05),
+        rgba(255, 18, 165, 0.2)
+    ), #0b0c0c;
+    border-radius: 5px;
+    padding: 15px;
+    z-index: 1000;
+    color: #fff;
+    font-family: 'Bai Jamjuree', sans-serif;
+    box-shadow: 0px 0px 20px rgba(255, 18, 165, 0.2);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+.leaderboard-container h3 {
+    font-size: 1.2em;
+    margin: 0 0 10px 0;
+    text-align: center;
+    text-shadow: 0 0 7px rgba(147, 51, 234, 0.53);
+}
+
+.total-given-away {
+    font-size: 1.5em;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 15px;
+    text-shadow: 0 0 7px rgba(255, 18, 165, 0.53);
+}
+
+.leaderboard-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1; /* Takes remaining space */
+}
+  
+.leaderboard-list li {
+    font-size: 1em;
+    margin: 5px 0;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 0 0 5px rgba(255, 18, 165, 0.3);
+}
