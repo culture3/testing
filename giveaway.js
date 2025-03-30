@@ -18,14 +18,9 @@ $(document).ready(function () {
     let winnerMessagesList = [];
     let isSpecialSpin = false;
     let specialItemPool = [];
-    let lastWinners = [];
-    let leaderboardData = {};
     let isReelInParticipantMode = true;
 
-    // Base URL for InfinityFree PHP scripts
-    const apiBaseUrl = 'https://frequencybenders.infinityfreeapp.com/';
-
-    // Define top items
+    // Define top items (individual probability ≤ 10%, totaling 15.2%)
     const topPercentItems = potentialDrops.filter(item => item.probability <= 10);
 
     // DOM elements
@@ -41,6 +36,9 @@ $(document).ready(function () {
     const leaderboardList = $('#leaderboard-list');
     const totalGivenAwayDisplay = $('#total-given-away');
 
+    // Server URL
+    const serverUrl = 'https://frequencybenders.infinityfreeapp.com';
+
     let cumulativeProb = 0;
     const cumulativeProbs = potentialDrops.map((item) => {
         cumulativeProb += item.probability;
@@ -54,39 +52,36 @@ $(document).ready(function () {
 
     // Fetch initial data from server
     function fetchData() {
-        $.getJSON(`${apiBaseUrl}get_data.php`, function(data) {
-            leaderboardData = data.leaderboardData || {};
-            lastWinners = data.lastWinners || [];
-            displayLastWinners();
-            displayLeaderboard();
-        }).fail(function(jqXHR, textStatus, errorThrown) {
-            console.error('Failed to fetch data:', textStatus, errorThrown);
+        $.getJSON(`${serverUrl}/get_data.php`, (data) => {
+            displayLastWinners(data.lastWinners);
+            displayLeaderboard(data.leaderboard, data.totalGivenAway);
+        }).fail((error) => {
+            console.error('Error fetching data:', error);
         });
     }
 
-    // Function to update last winners
-    function updateLastWinners(winner) {
-        const timestamp = new Date().toISOString();
+    // Function to update last winners and leaderboard on server
+    function updateServerData(winner, prizeName) {
         $.ajax({
-            url: `${apiBaseUrl}update_last_winners.php`,
-            type: 'POST',
+            url: `${serverUrl}/update_winner.php`,
+            method: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify({ winner: winner }),
-            success: function(response) {
+            data: JSON.stringify({ winner, prizeName }),
+            success: (response) => {
                 if (response.success) {
-                    lastWinners.unshift({ winner, timestamp });
-                    if (lastWinners.length > 5) lastWinners.pop();
-                    displayLastWinners();
+                    fetchData(); // Refresh data after update
+                } else {
+                    console.error('Server update failed:', response.error);
                 }
             },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.error('Failed to update last winners:', textStatus, errorThrown);
+            error: (error) => {
+                console.error('Error updating server:', error);
             }
         });
     }
 
     // Function to display last winners
-    function displayLastWinners() {
+    function displayLastWinners(lastWinners) {
         winnersList.empty();
         lastWinners.forEach(({ winner }) => {
             const listItem = $(`<li>${winner}</li>`);
@@ -94,45 +89,22 @@ $(document).ready(function () {
         });
     }
 
-    // Function to update leaderboard
-    function updateLeaderboard(winner, prizeName) {
-        const amount = parseInt(prizeName.split(' ')[0], 10);
-        $.ajax({
-            url: `${apiBaseUrl}update_leaderboard.php`,
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({ winner: winner, amount: amount }),
-            success: function(response) {
-                if (response.success) {
-                    leaderboardData[winner] = (leaderboardData[winner] || 0) + amount;
-                    displayLeaderboard();
-                }
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.error('Failed to update leaderboard:', textStatus, errorThrown);
-            }
-        });
-    }
-
     // Function to display leaderboard
-    function displayLeaderboard() {
-        const sortedLeaderboard = Object.entries(leaderboardData)
-            .sort((a, b) => b[1] - a[1])
-            .slice(0, 10);
+    function displayLeaderboard(leaderboard, totalGivenAway) {
         leaderboardList.empty();
-        sortedLeaderboard.forEach(([username, total]) => {
-            const listItem = $(`<li>${username}: ${total}</li>`);
+        leaderboard.forEach(({ username, total_coins }) => {
+            const listItem = $(`<li>${username}: ${total_coins}</li>`);
             leaderboardList.append(listItem);
         });
 
-        const emptySlots = 10 - sortedLeaderboard.length;
+        // Fill with empty entries if less than 10
+        const emptySlots = 10 - leaderboard.length;
         for (let i = 0; i < emptySlots; i++) {
-            const emptyItem = $(`<li> </li>`);
+            const emptyItem = $(`<li> </li>`);
             leaderboardList.append(emptyItem);
         }
 
-        const totalGivenAway = Object.values(leaderboardData).reduce((sum, val) => sum + val, 0);
-        totalGivenAwayDisplay.text(totalGivenAway);
+        totalGivenAwayDisplay.text(totalGivenAway || 0);
     }
 
     // WebSocket setup
@@ -328,7 +300,7 @@ $(document).ready(function () {
                                     winnerName.text(currentWinner);
                                     winningElement.find('.participant-name')
                                         .addClass('float-image highlighted-winner');
-                                    updateLastWinners(currentWinner);
+                                    updateServerData(currentWinner, '0 Tip'); // Add winner with 0 coins for now
                                     winnerSelected = true;
                                     updateButtons();
                                 } else {
@@ -350,7 +322,7 @@ $(document).ready(function () {
                                         setTimeout(() => spinWheel(button, true), 1500);
                                     } else {
                                         triggerConfetti(winningElement);
-                                        updateLeaderboard(currentWinner, winningItem.name);
+                                        updateServerData(currentWinner, winningItem.name); // Update with prize
                                         winnerSelected = false;
                                         if (isSpecialSpin) isSpecialSpin = false;
                                         updateButtons();
@@ -445,6 +417,6 @@ $(document).ready(function () {
     // Initial setup
     updateButtons();
     participantCount.text('0');
-    fetchData();
+    fetchData(); // Fetch initial data from server
     populateReel(Array.from(participants));
 });
